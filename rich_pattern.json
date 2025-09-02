@@ -1,0 +1,106 @@
+{
+  "id": "products-grid",
+  "description": "Personalize grid by age, interest, and device; includes AB test.",
+  "logic": "PRIORITY",
+  "priority_order": [
+    "teen-outdoors",
+    "adult-student",
+    "mobile",
+    "abtest",
+    "fallback"
+  ],
+  "rules": [
+    {
+      "rule_id": "teen-outdoors",
+      "when": [
+        {
+          "type": "cookie",
+          "key": "age_group",
+          "op": "lt",
+          "value": 18
+        },
+        {
+          "type": "profile",
+          "key": "interest",
+          "op": "in",
+          "value": [
+            "outdoors",
+            "hiking"
+          ]
+        }
+      ],
+      "show": {
+        "variant_id": "grid_teen_outdoors",
+        "content_ref": "grid_teen_outdoors"
+      },
+      "schedule": {
+        "start": "2025-08-01T00:00:00Z",
+        "end": "2025-12-31T23:59:59Z"
+      }
+    },
+    {
+      "rule_id": "adult-student",
+      "when": [
+        {
+          "type": "cookie",
+          "key": "age_group",
+          "op": "gte",
+          "value": 18
+        },
+        {
+          "type": "url_param",
+          "key": "segment",
+          "op": "eq",
+          "value": "student"
+        }
+      ],
+      "show": {
+        "variant_id": "grid_adult_student",
+        "content_ref": "grid_adult_student"
+      }
+    },
+    {
+      "rule_id": "mobile",
+      "when": [
+        {
+          "type": "device",
+          "key": "is_mobile",
+          "op": "eq",
+          "value": true
+        }
+      ],
+      "show": {
+        "variant_id": "grid_mobile",
+        "content_ref": "grid_mobile"
+      }
+    },
+    {
+      "rule_id": "abtest",
+      "when": [],
+      "ab": {
+        "variants": [
+          {
+            "variant_id": "A",
+            "weight": 50,
+            "content_ref": "grid_variant_A"
+          },
+          {
+            "variant_id": "B",
+            "weight": 50,
+            "content_ref": "grid_variant_B"
+          }
+        ],
+        "persist_key": "ab_products_grid"
+      }
+    }
+  ],
+  "fallback": {
+    "variant_id": "grid_default",
+    "content_ref": "grid_default"
+  },
+  "telemetry": {
+    "track_impressions": true,
+    "track_clicks": true,
+    "event_namespace": "otto.personalization"
+  }
+}
